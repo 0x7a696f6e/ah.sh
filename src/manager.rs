@@ -102,7 +102,6 @@ pub fn restore_session(key: Option<&SessionKey>) -> Result<()> {
                         return nix_develop_of_session(session.clone());
                     }
                 }
-                println!();
             } else {
                 println!("No session history found for current directory.");
             }

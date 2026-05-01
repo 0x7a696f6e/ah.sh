@@ -84,11 +84,8 @@ pub enum Commands {
         provider: Option<ProviderType>,
     },
 
-    Completion {
-        /// Shell to generate completions for
-        #[arg(required = true)]
-        shell: clap_complete::Shell,
-    },
+    /// Print completion script by shell
+    Completion { shell: clap_complete::Shell },
 }
 
 #[derive(Subcommand, Debug)]

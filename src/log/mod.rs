@@ -2,7 +2,6 @@ use std::io::{IsTerminal, stderr};
 use std::sync::Mutex;
 
 use anyhow::Result;
-use fs_err as fs;
 use tracing_appender::{
     non_blocking::WorkerGuard,
     rolling::{RollingFileAppender, Rotation},
@@ -23,8 +22,6 @@ static LOG_GUARD: Mutex<Option<WorkerGuard>> = Mutex::new(None);
 
 pub fn initialize() {
     let log_dir = path::local::get_logs_dir();
-    fs::create_dir_all(&log_dir).ok();
-
     let file_appender = RollingFileAppender::new(Rotation::DAILY, &log_dir, "log");
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 

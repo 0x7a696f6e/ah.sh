@@ -3,7 +3,7 @@ use std::io::Write;
 use std::path::Path;
 use std::{env, mem, ptr};
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use tempfile::NamedTempFile;
 use tracing::instrument;
 
@@ -23,19 +23,13 @@ pub fn exit_with_error(e: anyhow::Error) {
 
 #[instrument(skip_all, err, fields(path = %path.display()))]
 pub fn atomic_write(path: &Path, contents: &str) -> Result<()> {
-    let parent = path.parent().context("failed to get parent directory")?;
-    let mut tmp = NamedTempFile::new_in(parent)
-        .with_context(|| format!("failed to create temp file in {:?}", parent))?;
+    let parent = path.parent().unwrap();
+    fs_err::create_dir_all(parent)?;
 
-    tmp.write_all(contents.as_bytes())
-        .with_context(|| format!("failed to write to temp file for {:?}", path))?;
-
-    tmp.as_file()
-        .sync_all()
-        .with_context(|| format!("failed to sync temp file for {:?}", path))?;
-
-    tmp.persist(path)
-        .with_context(|| format!("failed to persist temp file to {:?}", path))?;
+    let mut tmp = NamedTempFile::new_in(parent)?;
+    tmp.write_all(contents.as_bytes())?;
+    tmp.as_file().sync_all()?;
+    tmp.persist(path)?;
 
     Ok(())
 }

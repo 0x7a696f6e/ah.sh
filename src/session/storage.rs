@@ -99,10 +99,9 @@ pub fn find_session_by_history() -> Result<Vec<Session>> {
 #[instrument(skip_all, fields(session_id = %session.id))]
 pub fn save_session(session: &Session) -> Result<()> {
     let session_dir = session.get_dir();
-    fs::create_dir_all(&session_dir)?;
-
     let flake_contents = get_flake_contents(session.provider)(&session.languages)?;
     let flake_path = session_dir.join(FLAKE_FILE);
+
     util::atomic_write(&flake_path, &flake_contents)
         .with_context(|| format!("failed to write flake.nix: {:?}", flake_path))?;
 

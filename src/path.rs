@@ -86,9 +86,6 @@ pub mod cache {
 
     pub fn save_current_session(session_id: &str) -> Result<()> {
         let path = get_current_session();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         util::atomic_write(&path, session_id)
     }
 

@@ -3,7 +3,6 @@ use std::sync::OnceLock;
 
 use anyhow::{Context, Result};
 use config::{Config as ConfigBuilder, Environment, File, FileFormat};
-use fs_err as fs;
 
 use crate::APP_NAME;
 use crate::log::LogLevel;
@@ -30,15 +29,15 @@ pub fn init() {
 
 fn load_config() -> Result<()> {
     let config_path = path::config::get_config_file();
+    let default_config = include_str!("assets/default_config.toml");
+    util::atomic_write(&config_path, default_config)?;
 
-    create_default_config(&config_path)?;
+    let file_source = File::from(config_path.as_path())
+        .format(FileFormat::Toml)
+        .required(true);
 
     let config_data = ConfigBuilder::builder()
-        .add_source(
-            File::from(config_path.as_path())
-                .format(FileFormat::Toml)
-                .required(true),
-        )
+        .add_source(file_source)
         .add_source(Environment::with_prefix(APP_NAME))
         .build()
         .map_err(|e| match e {
@@ -54,23 +53,14 @@ fn load_config() -> Result<()> {
              See https://github.com/z1-0/ah.sh/blob/main/src/assets/config.schema.json for reference",
         )?;
 
-    CONFIG
-        .set(config_data)
-        .map_err(|_| anyhow::anyhow!("Config already initialized"))?;
+    CONFIG.set(config_data).unwrap();
 
     Ok(())
 }
 
-fn create_default_config(dest_path: &std::path::Path) -> Result<()> {
-    if let Some(parent) = dest_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let default_config = include_str!("assets/default_config.toml");
-    util::atomic_write(dest_path, default_config)
-}
-
 #[test]
 fn ensure_schema_is_up_to_date() {
+    use std::fs;
     use std::io::ErrorKind;
     use std::path::PathBuf;
 
