@@ -24,7 +24,11 @@ pub fn get() -> &'static AppConfig {
     CONFIG.get().unwrap()
 }
 
-pub fn load_config() -> Result<()> {
+pub fn init() {
+    load_config().unwrap_or_else(util::exit_with_error);
+}
+
+fn load_config() -> Result<()> {
     let config_path = path::config::get_config_file();
 
     create_default_config(&config_path)?;

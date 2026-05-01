@@ -7,7 +7,19 @@ use anyhow::{Context, Result};
 use tempfile::NamedTempFile;
 use tracing::instrument;
 
-use crate::config;
+use crate::{config, output};
+
+pub fn exit_with_error(e: anyhow::Error) {
+    e.downcast_ref::<clap::Error>()
+        .map(|clap_err| {
+            let _ = clap_err.print();
+            std::process::exit(clap_err.exit_code())
+        })
+        .unwrap_or_else(|| {
+            output::print_error(format!("{:#}", e));
+            std::process::exit(libc::EXIT_FAILURE)
+        });
+}
 
 #[instrument(skip_all, err, fields(path = %path.display()))]
 pub fn atomic_write(path: &Path, contents: &str) -> Result<()> {

@@ -1,24 +1,12 @@
-use std::process;
-
-use ah::output::print_error;
+use ah::{cli, config, log, util};
 
 fn main() {
-    ah::config::load_config().unwrap();
-    ah::cli::complete_dynamic();
+    config::init();
+    cli::complete_dynamic();
 
-    ah::log::with_logging(|| {
-        ah::cli::run()?;
+    log::with_logging(|| {
+        cli::run()?;
         Ok(())
     })
-    .unwrap_or_else(|e| {
-        e.downcast_ref::<clap::Error>()
-            .map(|clap_err| {
-                let _ = clap_err.print();
-                process::exit(clap_err.exit_code())
-            })
-            .unwrap_or_else(|| {
-                print_error(format!("{:#}", e));
-                process::exit(libc::EXIT_FAILURE)
-            })
-    })
+    .unwrap_or_else(util::exit_with_error)
 }
