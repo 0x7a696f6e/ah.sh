@@ -20,7 +20,10 @@ pub fn session_id_candidates() -> Vec<CompletionCandidate> {
     };
     sessions
         .iter()
-        .map(|s| CompletionCandidate::new(s.id.clone()))
+        .map(|s| {
+            let help = (!s.languages.is_empty()).then(|| s.languages.join(", "));
+            CompletionCandidate::new(s.id.clone()).help(help.map(String::into))
+        })
         .collect()
 }
 
