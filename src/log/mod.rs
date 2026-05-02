@@ -40,19 +40,20 @@ pub fn initialize() {
 
     let file_layer = fmt::layer()
         .json()
-        .with_writer(non_blocking)
         .with_span_events(FmtSpan::ACTIVE)
+        .with_writer(non_blocking)
         .with_filter(file_filter);
 
     let console_layer = fmt::layer()
-        .with_timer(fmt::time::uptime())
         .with_ansi(stderr().is_terminal())
+        .with_span_events(FmtSpan::ACTIVE)
+        .with_timer(fmt::time::uptime())
         .with_writer(stderr)
         .with_filter(console_filter);
 
     tracing_subscriber::registry()
-        .with(file_layer)
         .with(console_layer)
+        .with(file_layer)
         .try_init()
         .ok();
 

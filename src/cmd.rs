@@ -1,5 +1,5 @@
 use std::os::unix::process::CommandExt;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 use anyhow::{Context, Result};
 use tracing::debug;
@@ -60,22 +60,20 @@ pub fn nix_develop_of_session(session: Session) -> Result<()> {
 }
 
 #[instrument(skip_all, err, fields(session_id = %session.id))]
-pub fn nix_flake_update_of_session(session: &Session) -> Result<String> {
+pub fn nix_flake_update_of_session(session: &Session) -> Result<()> {
     check_nix_available()?;
 
     let mut cmd = Command::new("nix");
     cmd.arg("flake")
         .arg("update")
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
         .current_dir(session.get_dir());
 
     Span::current().record("cmd", format!("{:?}", cmd));
 
-    let output = cmd.output().context("failed to run nix flake update")?;
-    if !output.status.success() {
-        anyhow::bail!("{}", String::from_utf8_lossy(&output.stderr).trim());
-    }
-
-    String::from_utf8(output.stdout).context("failed to decode nix output")
+    cmd.status().context("failed to run nix flake update")?;
+    Ok(())
 }
 
 #[instrument(skip_all, err)]
