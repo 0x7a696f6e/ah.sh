@@ -10,7 +10,7 @@ Please read and follow our [Code of Conduct](https://www.contributor-covenant.or
 
 ### Reporting Bugs
 
-1. Search existing [Issues](https://github.com/your-repo/ah/issues) to avoid duplicates
+1. Search existing [Issues](https://github.com/z1-0/ah.sh/issues) to avoid duplicates
 2. Use the Bug Report template to create a new issue
 3. Include the following information:
    - Steps to reproduce

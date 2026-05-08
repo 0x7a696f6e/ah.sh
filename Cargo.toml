@@ -31,6 +31,8 @@ strip = true
 [dependencies]
 anyhow = "1.0"
 blake3 = "1.8"
+chrono = "0.4.44"
+chrono-humanize = "0.2.3"
 clap = { version = "4.6", features = ["derive"] }
 clap_complete = { version = "4.6", features = ["unstable-dynamic"] }
 comfy-table = "7.2"

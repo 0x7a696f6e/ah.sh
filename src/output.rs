@@ -45,16 +45,35 @@ pub fn ask_confirmation(prompt: &str) -> bool {
 }
 
 pub fn print_sessions_list(sessions: &[Session]) {
-    let default_headers = ["Index", "ID", "Provider", "Languages"];
+    fn format_time(time: std::time::SystemTime) -> String {
+        use chrono::{DateTime, Utc};
+        use chrono_humanize::{Accuracy, HumanTime, Tense};
+
+        let datetime: DateTime<Utc> = time.into();
+        let ht = HumanTime::from(datetime);
+        ht.to_text_en(Accuracy::Rough, Tense::Past)
+    }
+
+    let default_headers = ["Index", "ID", "Provider", "Languages", "Time"];
     let mut rows: Vec<Vec<String>> = Vec::with_capacity(sessions.len());
 
     for (i, s) in sessions.iter().enumerate() {
         let langs = s.languages.join(", ");
+        let last_used = format_time(s.last_used_at);
+        let last_updated = format_time(s.last_updated_at);
+
+        let time_str = if last_used == last_updated {
+            last_used
+        } else {
+            format!("Used: {}\nUpdated: {}", last_used, last_updated)
+        };
+
         rows.push(vec![
             (i + 1).to_string(),
             s.id.clone(),
             s.provider.to_string(),
             langs,
+            time_str,
         ]);
     }
     print_sessions_table(&default_headers, &rows);
