@@ -1,7 +1,8 @@
+use std::cmp::max;
 use std::collections::HashMap;
 use std::io::{IsTerminal, Write, stdin, stdout};
 
-use comfy_table::{Attribute, Cell, Color, Table, presets::UTF8_FULL};
+use comfy_table::{Attribute, Cell, Color, Table, presets::NOTHING};
 use crossterm::style::Stylize;
 
 use crate::provider::{ProviderType, get_provider};
@@ -45,44 +46,49 @@ pub fn ask_confirmation(prompt: &str) -> bool {
 }
 
 pub fn print_sessions_list(sessions: &[Session]) {
-    fn format_time(time: std::time::SystemTime) -> String {
-        use chrono::{DateTime, Utc};
-        use chrono_humanize::{Accuracy, HumanTime, Tense};
-
-        let datetime: DateTime<Utc> = time.into();
-        let ht = HumanTime::from(datetime);
-        ht.to_text_en(Accuracy::Rough, Tense::Past)
+    fn format_age(time: std::time::SystemTime) -> String {
+        let now = std::time::SystemTime::now();
+        let secs = now.duration_since(time).unwrap_or_default().as_secs();
+        if secs < 60 {
+            format!("{secs}s")
+        } else if secs < 3600 {
+            format!("{}m", secs / 60)
+        } else if secs < 86400 {
+            format!("{}h", secs / 3600)
+        } else if secs < 86400 * 30 {
+            format!("{}d", secs / 86400)
+        } else if secs < 86400 * 365 {
+            format!("{}m", secs / (86400 * 30))
+        } else {
+            format!("{}y", secs / (86400 * 365))
+        }
     }
 
-    let default_headers = ["Index", "ID", "Provider", "Languages", "Time"];
+    let default_headers = ["Index", "ID", "Age", "Provider", "Languages"];
     let mut rows: Vec<Vec<String>> = Vec::with_capacity(sessions.len());
 
     for (i, s) in sessions.iter().enumerate() {
         let langs = s.languages.join(", ");
-        let last_used = format_time(s.last_used_at);
-        let last_updated = format_time(s.last_updated_at);
-
-        let time_str = if last_used == last_updated {
-            last_used
-        } else {
-            format!("Used: {}\nUpdated: {}", last_used, last_updated)
-        };
+        let last_time = max(s.last_used_at, s.last_updated_at);
+        let age = format_age(last_time);
 
         rows.push(vec![
-            (i + 1).to_string(),
+            format!("#{}", i + 1),
             s.id.clone(),
+            age,
             s.provider.to_string(),
             langs,
-            time_str,
         ]);
     }
     print_sessions_table(&default_headers, &rows);
 }
 
 fn print_sessions_table(headers: &[&str], rows: &[Vec<String>]) {
+    const SESSION_PRESET: &str = "        │          ";
+
     let mut table = Table::new();
     table
-        .load_preset(UTF8_FULL)
+        .load_preset(SESSION_PRESET)
         .set_content_arrangement(comfy_table::ContentArrangement::Dynamic);
 
     let header_cells: Vec<Cell> = headers
@@ -122,7 +128,7 @@ pub fn print_provider_list(providers: &[ProviderType]) {
 fn print_provider_table(providers: &[(String, usize)]) {
     let mut table = Table::new();
     table
-        .load_preset(UTF8_FULL)
+        .load_preset(NOTHING)
         .set_content_arrangement(comfy_table::ContentArrangement::Dynamic);
 
     table.set_header(vec![
