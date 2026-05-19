@@ -41,7 +41,7 @@ pub fn list_provider() -> Result<()> {
 pub fn list_sessions() -> Result<()> {
     let sessions = session::list_sessions()?;
     if sessions.is_empty() {
-        output::print_bold("No sessions found.");
+        output::print_bold("No session found.");
         return Ok(());
     }
 
@@ -52,7 +52,7 @@ pub fn list_sessions() -> Result<()> {
 #[instrument(skip_all)]
 pub fn remove_sessions(keys: &[SessionKey]) -> Result<()> {
     let Some(result) = session::remove_sessions(keys)? else {
-        output::print_bold("No sessions found.");
+        output::print_bold("No session found.");
         return Ok(());
     };
 
@@ -103,7 +103,7 @@ pub fn restore_session(key: Option<&SessionKey>) -> Result<()> {
                     }
                 }
             } else {
-                println!("No session history found for current directory.");
+                println!("No session found for current directory.");
             }
             Ok(())
         }

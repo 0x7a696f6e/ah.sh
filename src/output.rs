@@ -132,9 +132,6 @@ fn print_provider_table(providers: &[(String, usize)]) {
         .set_content_arrangement(comfy_table::ContentArrangement::Dynamic);
 
     table.set_header(vec![
-        Cell::new("Index")
-            .add_attribute(Attribute::Bold)
-            .fg(Color::Blue),
         Cell::new("Provider")
             .add_attribute(Attribute::Bold)
             .fg(Color::Blue),
@@ -143,12 +140,8 @@ fn print_provider_table(providers: &[(String, usize)]) {
             .fg(Color::Blue),
     ]);
 
-    for (i, (name, lang_count)) in providers.iter().enumerate() {
-        table.add_row(vec![
-            Cell::new(i + 1),
-            Cell::new(name.as_str()).fg(Color::Green),
-            Cell::new(*lang_count),
-        ]);
+    for (name, lang_count) in providers.iter() {
+        table.add_row(vec![Cell::new(name), Cell::new(*lang_count)]);
     }
 
     println!("{table}");
