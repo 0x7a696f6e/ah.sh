@@ -52,7 +52,7 @@ jobs:
 
       - name: Comment when no changes
         if: steps.cpr.outputs.pull-request-number != '' && steps.cpr.outputs.pull-request-operation == 'none'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
