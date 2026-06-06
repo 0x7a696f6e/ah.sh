@@ -33,7 +33,9 @@ pub struct SessionRemoveResult {
 
 #[derive(strum::Display, Debug, Clone, PartialEq, Eq)]
 pub enum SessionKey {
+    #[strum(transparent)]
     Index(usize),
+    #[strum(transparent)]
     Id(String),
 }
 
@@ -118,8 +120,11 @@ mod tests {
     }
 
     #[test]
-    fn display_uses_variant_name() {
-        assert_eq!(SessionKey::Index(7).to_string(), "Index");
-        assert_eq!(SessionKey::Id("deadbeef".to_string()).to_string(), "Id");
+    fn display_uses_inner_value() {
+        assert_eq!(SessionKey::Index(7).to_string(), "7");
+        assert_eq!(
+            SessionKey::Id("deadbeef".to_string()).to_string(),
+            "deadbeef"
+        );
     }
 }
