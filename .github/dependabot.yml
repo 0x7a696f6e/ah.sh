@@ -1,22 +1,40 @@
+---
 version: 2
 updates:
-  - package-ecosystem: "cargo"
-    directory: "/"
+  - package-ecosystem: cargo
+    directory: /
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: weekly
+      day: wednesday
+    versioning-strategy: increase-if-necessary
     commit-message:
-      prefix: "chore"
+      prefix: chore
+      scope: cargo
+    labels:
+      - cargo
     groups:
       cargo-minor-and-patch:
         update-types:
-          - "minor"
-          - "patch"
+          - minor
+          - patch
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: weekly
+      day: wednesday
     commit-message:
-      prefix: "ci"
+      prefix: ci
+    labels:
+      - github-actions
+
+  - package-ecosystem: nix
+    directory: /
+    schedule:
+      interval: weekly
+      day: wednesday
+    commit-message:
+      prefix: chore
+      scope: nix
+    labels:
+      - nix
