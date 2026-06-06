@@ -86,3 +86,128 @@ fn extract_attributes(attr_set: &AttrSet, shell_attrs: &mut ShellAttrs) {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_mk_shell_with_env_and_extra_attrs() {
+        let source = r#"
+            { pkgs }:
+            pkgs.mkShell {
+              packages = with pkgs; [ rustc cargo ];
+              env = {
+                RUST_SRC_PATH = "foo";
+                MY_VAR = "bar";
+              };
+              postShellHook = ''
+                echo hello
+              '';
+            }
+        "#;
+
+        let attrs = parse_flake_shell(source);
+
+        assert_eq!(
+            attrs.env,
+            vec![
+                ("RUST_SRC_PATH".to_string(), "\"foo\"".to_string()),
+                ("MY_VAR".to_string(), "\"bar\"".to_string()),
+            ]
+        );
+
+        let keys: Vec<&str> = attrs.extra_attrs.iter().map(|(k, _)| k.as_str()).collect();
+        assert!(
+            keys.contains(&"postShellHook"),
+            "expected postShellHook in extra_attrs, got: {keys:?}"
+        );
+        assert!(
+            !keys.contains(&"packages"),
+            "packages should be ignored, got: {keys:?}"
+        );
+    }
+
+    #[test]
+    fn parses_mk_shell_no_cc() {
+        let source = r#"
+            pkgs.mkShellNoCC {
+              env = { GREETING = "hi"; };
+            }
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        assert_eq!(
+            attrs.env,
+            vec![("GREETING".to_string(), "\"hi\"".to_string())]
+        );
+    }
+
+    #[test]
+    fn ignores_known_input_keys() {
+        let source = r#"
+            pkgs.mkShell {
+              packages = [ a ];
+              buildInputs = [ b ];
+              nativeBuildInputs = [ c ];
+              shellHook = "ignored";
+              inputsFrom = [ d ];
+            }
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        let keys: Vec<&str> = attrs.extra_attrs.iter().map(|(k, _)| k.as_str()).collect();
+        assert!(
+            keys.is_empty(),
+            "all input-only keys should be dropped, got: {keys:?}"
+        );
+    }
+
+    #[test]
+    fn non_attrset_env_falls_back_to_extra_attrs() {
+        let source = r#"
+            pkgs.mkShell {
+              env = someExpr;
+            }
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        assert!(attrs.env.is_empty());
+        assert_eq!(
+            attrs.extra_attrs,
+            vec![("env".to_string(), "someExpr".to_string())]
+        );
+    }
+
+    #[test]
+    fn source_without_mk_shell_returns_default_attrs() {
+        let source = r#"
+            { pkgs }:
+            pkgs.buildEnv { name = "x"; paths = []; }
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        assert_eq!(attrs, ShellAttrs::default());
+    }
+
+    #[test]
+    fn takes_only_the_first_mk_shell() {
+        let source = r#"
+            pkgs.mkShell { env = { A = "1"; }; };
+            pkgs.mkShell { env = { B = "2"; }; };
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        assert_eq!(attrs.env, vec![("A".to_string(), "\"1\"".to_string())]);
+    }
+
+    #[test]
+    fn non_mk_shell_apply_is_ignored() {
+        let source = r#"
+            pkgs.runCommand "x" { env = { FOO = "bar"; }; } ""
+        "#;
+
+        let attrs = parse_flake_shell(source);
+        assert_eq!(attrs, ShellAttrs::default());
+    }
+}

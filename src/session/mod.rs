@@ -80,3 +80,59 @@ pub fn create_session(provider: ProviderType, languages: Vec<Language>) -> Resul
 
     Ok(session)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generate_id_is_deterministic() {
+        let id1 = generate_id(ProviderType::Devenv, &["rust".to_string()]);
+        let id2 = generate_id(ProviderType::Devenv, &["rust".to_string()]);
+        assert_eq!(id1, id2);
+    }
+
+    #[test]
+    fn generate_id_has_session_id_length() {
+        let id = generate_id(
+            ProviderType::Devenv,
+            &["rust".to_string(), "go".to_string()],
+        );
+        assert_eq!(id.len(), SESSION_ID_LEN);
+        assert!(id.chars().all(|c| c.is_ascii_hexdigit()));
+    }
+
+    #[test]
+    fn different_providers_produce_different_ids() {
+        let devenv = generate_id(ProviderType::Devenv, &["rust".to_string()]);
+        let templates = generate_id(ProviderType::DevTemplates, &["rust".to_string()]);
+        assert_ne!(devenv, templates);
+    }
+
+    #[test]
+    fn different_languages_produce_different_ids() {
+        let a = generate_id(ProviderType::Devenv, &["rust".to_string()]);
+        let b = generate_id(ProviderType::Devenv, &["go".to_string()]);
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn language_order_affects_id() {
+        let a = generate_id(
+            ProviderType::Devenv,
+            &["rust".to_string(), "go".to_string()],
+        );
+        let b = generate_id(
+            ProviderType::Devenv,
+            &["go".to_string(), "rust".to_string()],
+        );
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn empty_languages_yields_a_valid_id() {
+        let id = generate_id(ProviderType::Devenv, &[]);
+        assert_eq!(id.len(), SESSION_ID_LEN);
+        assert!(id.chars().all(|c| c.is_ascii_hexdigit()));
+    }
+}

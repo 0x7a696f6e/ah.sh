@@ -141,3 +141,97 @@ pub fn generate_dev_templates_flake(languages: &[String], parsed_attrs: &[ShellA
         extra_attrs_str
     )
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn emits_input_per_language() {
+        let flake = generate_dev_templates_flake(&["rust".into()], &[ShellAttrs::default()]);
+        assert!(
+            flake.contains(
+                r#"dev-templates_rust.url = "github:the-nix-way/dev-templates?dir=rust";"#
+            )
+        );
+        assert!(flake.contains(r#"dev-templates_rust.inputs.nixpkgs.follows = "nixpkgs";"#));
+        assert!(flake.contains("rust, ... }:"));
+    }
+
+    #[test]
+    fn emits_shell_binding_per_language() {
+        let flake = generate_dev_templates_flake(
+            &["rust".into(), "go".into()],
+            &[ShellAttrs::default(), ShellAttrs::default()],
+        );
+        assert!(flake.contains(r#"rust = dev-templates_rust.devShells.${system}.default;"#));
+        assert!(flake.contains(r#"go = dev-templates_go.devShells.${system}.default;"#));
+    }
+
+    #[test]
+    fn uses_mk_shell_no_cc() {
+        let flake = generate_dev_templates_flake(&["rust".into()], &[ShellAttrs::default()]);
+        assert!(flake.contains("default = pkgs.mkShellNoCC"));
+    }
+
+    #[test]
+    fn concatenates_shell_hooks_across_languages() {
+        let attrs_a = ShellAttrs {
+            extra_attrs: vec![("postShellHook".to_string(), "echo a".to_string())],
+            ..ShellAttrs::default()
+        };
+        let attrs_b = ShellAttrs {
+            extra_attrs: vec![("postShellHook".to_string(), "echo b".to_string())],
+            ..ShellAttrs::default()
+        };
+        let flake =
+            generate_dev_templates_flake(&["rust".into(), "go".into()], &[attrs_a, attrs_b]);
+        assert!(
+            flake.contains(
+                r#"postShellHook = shells."rust".postShellHook + "\n" + shells."go".postShellHook;"#
+            ),
+            "missing hook concat: {flake}"
+        );
+    }
+
+    #[test]
+    fn env_keys_are_merged_with_last_writer_wins() {
+        let attrs_a = ShellAttrs {
+            env: vec![("FOO".to_string(), "a".to_string())],
+            ..ShellAttrs::default()
+        };
+        let attrs_b = ShellAttrs {
+            env: vec![("FOO".to_string(), "b".to_string())],
+            ..ShellAttrs::default()
+        };
+        let flake =
+            generate_dev_templates_flake(&["rust".into(), "go".into()], &[attrs_a, attrs_b]);
+        assert!(flake.contains(r#"FOO = shells."go".FOO;"#), "{flake}");
+        assert!(!flake.contains(r#"FOO = shells."rust".FOO;"#));
+    }
+
+    #[test]
+    fn extra_attrs_take_first_language_for_non_hook_keys() {
+        let attrs_a = ShellAttrs {
+            extra_attrs: vec![("venvDir".to_string(), "a".to_string())],
+            ..ShellAttrs::default()
+        };
+        let attrs_b = ShellAttrs {
+            extra_attrs: vec![("venvDir".to_string(), "b".to_string())],
+            ..ShellAttrs::default()
+        };
+        let flake =
+            generate_dev_templates_flake(&["rust".into(), "go".into()], &[attrs_a, attrs_b]);
+        assert!(
+            flake.contains(r#"venvDir = shells."rust".venvDir;"#),
+            "{flake}"
+        );
+    }
+
+    #[test]
+    fn empty_languages_produces_usable_flake() {
+        let flake = generate_dev_templates_flake(&[], &[]);
+        assert!(flake.contains("devShells = forAllSystems"));
+        assert!(flake.contains("default = pkgs.mkShellNoCC"));
+    }
+}

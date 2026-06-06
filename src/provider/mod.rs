@@ -110,3 +110,81 @@ pub fn get_flake_contents(provider: ProviderType) -> fn(&[String]) -> Result<Str
         ProviderType::DevTemplates => dev_templates::get_flake_contents,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn supported_names_pass_through() {
+        let out = to_supported_languages(ProviderType::Devenv, &["rust".into()]).unwrap();
+        assert_eq!(out, vec!["rust".to_string()]);
+    }
+
+    #[test]
+    fn aliases_resolve_to_canonical_names() {
+        let out = to_supported_languages(
+            ProviderType::Devenv,
+            &["ts".into(), "py".into(), "cpp".into()],
+        )
+        .unwrap();
+        assert_eq!(
+            out,
+            vec![
+                "cplusplus".to_string(),
+                "python".to_string(),
+                "typescript".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn output_is_sorted_and_deduplicated() {
+        let out = to_supported_languages(
+            ProviderType::Devenv,
+            &[
+                "rust".into(),
+                "go".into(),
+                "rust".into(),
+                "py".into(),
+                "go".into(),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            out,
+            vec!["go".to_string(), "python".to_string(), "rust".to_string()]
+        );
+    }
+
+    #[test]
+    fn unsupported_languages_are_reported() {
+        let err = to_supported_languages(ProviderType::Devenv, &["nope".into(), "rust".into()])
+            .unwrap_err();
+        let msg = err.to_string();
+        assert!(msg.contains("nope"), "missing 'nope' in: {msg}");
+        assert!(
+            !msg.contains("rust"),
+            "should not list supported langs: {msg}"
+        );
+    }
+
+    #[test]
+    fn unsupported_languages_empty_input_returns_empty() {
+        let out = to_supported_languages(ProviderType::Devenv, &[]).unwrap();
+        assert!(out.is_empty());
+    }
+
+    #[test]
+    fn works_for_dev_templates_provider() {
+        let out = to_supported_languages(
+            ProviderType::DevTemplates,
+            &["js".into(), "py".into(), "rust".into()],
+        )
+        .unwrap();
+        assert_eq!(
+            out,
+            vec!["node".to_string(), "python".to_string(), "rust".to_string()]
+        );
+    }
+}

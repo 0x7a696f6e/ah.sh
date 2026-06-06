@@ -60,3 +60,66 @@ impl FromStr for SessionKey {
         Ok(SessionKey::Id(input.to_lowercase()))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_numeric_string_as_index() {
+        let key = "1".parse::<SessionKey>().unwrap();
+        assert_eq!(key, SessionKey::Index(1));
+
+        let key = "42".parse::<SessionKey>().unwrap();
+        assert_eq!(key, SessionKey::Index(42));
+    }
+
+    #[test]
+    fn parses_eight_hex_chars_as_id() {
+        let key = "a3f8c2d1".parse::<SessionKey>().unwrap();
+        assert_eq!(key, SessionKey::Id("a3f8c2d1".to_string()));
+
+        let key = "ABCDEF01".parse::<SessionKey>().unwrap();
+        assert_eq!(key, SessionKey::Id("abcdef01".to_string()));
+    }
+
+    #[test]
+    fn empty_string_is_rejected() {
+        let err = "".parse::<SessionKey>().unwrap_err();
+        assert!(err.to_string().contains("empty"));
+    }
+
+    #[test]
+    fn zero_index_is_rejected() {
+        let err = "0".parse::<SessionKey>().unwrap_err();
+        assert!(err.to_string().contains("greater than 0"));
+    }
+
+    #[test]
+    fn wrong_length_id_is_rejected() {
+        for input in ["abc", "abcdef0", "abcdef012", "abcdef0123"] {
+            let err = input.parse::<SessionKey>().unwrap_err();
+            assert!(
+                err.to_string().contains("8 hexadecimal"),
+                "unexpected error for {input:?}: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn non_hex_chars_in_id_are_rejected() {
+        for input in ["zzzzzzzz", "abcdefg1", "1234567g"] {
+            let err = input.parse::<SessionKey>().unwrap_err();
+            assert!(
+                err.to_string().contains("8 hexadecimal"),
+                "unexpected error for {input:?}: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn display_uses_variant_name() {
+        assert_eq!(SessionKey::Index(7).to_string(), "Index");
+        assert_eq!(SessionKey::Id("deadbeef".to_string()).to_string(), "Id");
+    }
+}

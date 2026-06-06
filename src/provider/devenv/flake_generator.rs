@@ -55,3 +55,46 @@ pub fn generate_devenv_flake(languages: &[String]) -> String {
         languages_enable_str
     )
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn enables_each_requested_language() {
+        let flake = generate_devenv_flake(&["rust".into(), "go".into()]);
+        assert!(flake.contains("languages.rust.enable = true;"));
+        assert!(flake.contains("languages.go.enable = true;"));
+    }
+
+    #[test]
+    fn empty_languages_produces_valid_flake() {
+        let flake = generate_devenv_flake(&[]);
+        assert!(flake.contains("devenv.lib.mkShell"));
+        assert!(flake.contains("modules = ["));
+        assert!(!flake.contains("languages..enable = true;"));
+    }
+
+    #[test]
+    fn includes_devenv_inputs() {
+        let flake = generate_devenv_flake(&["rust".into()]);
+        assert!(flake.contains(r#"nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";"#));
+        assert!(flake.contains(r#"devenv.url = "github:cachix/devenv";"#));
+    }
+
+    #[test]
+    fn declares_default_devshell() {
+        let flake = generate_devenv_flake(&[]);
+        assert!(flake.contains("devShells = forAllSystems"));
+        assert!(flake.contains("default = devenv.lib.mkShell"));
+    }
+
+    #[test]
+    fn preserves_input_order_in_modules() {
+        let flake = generate_devenv_flake(&["a".into(), "b".into(), "c".into()]);
+        let a = flake.find("languages.a.enable").unwrap();
+        let b = flake.find("languages.b.enable").unwrap();
+        let c = flake.find("languages.c.enable").unwrap();
+        assert!(a < b && b < c, "languages should appear in input order");
+    }
+}
