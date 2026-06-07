@@ -211,3 +211,29 @@ mod tests {
         assert_eq!(attrs, ShellAttrs::default());
     }
 }
+
+#[cfg(test)]
+mod serde_tests {
+    use super::*;
+
+    #[test]
+    fn shell_attrs_roundtrips_through_json() {
+        let original = ShellAttrs {
+            env: vec![
+                ("RUST_SRC_PATH".into(), "\"foo\"".into()),
+                ("MY_VAR".into(), "\"bar\"".into()),
+            ],
+            extra_attrs: vec![("postShellHook".into(), "echo hi".into())],
+        };
+        let json = serde_json::to_string(&original).unwrap();
+        let restored: ShellAttrs = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored, original);
+    }
+
+    #[test]
+    fn shell_attrs_default_serializes_to_empty_arrays() {
+        let attrs = ShellAttrs::default();
+        let json = serde_json::to_string(&attrs).unwrap();
+        assert_eq!(json, r#"{"env":[],"extra_attrs":[]}"#);
+    }
+}

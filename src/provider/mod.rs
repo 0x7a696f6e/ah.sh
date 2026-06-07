@@ -188,3 +188,77 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod resource_tests {
+    use super::*;
+    use clap::ValueEnum;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn language_alias_keys_exist_in_supported_languages() {
+        for provider in ProviderType::iter() {
+            let supported = get_provider(provider).get_supported_languages().to_vec();
+            let aliases = get_provider(provider).get_language_to_aliases();
+            for lang in aliases.keys() {
+                assert!(
+                    supported.contains(lang),
+                    "{lang} present in language_aliases.json but missing from \
+                     supported_languages.json for {provider}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn aliases_resolve_back_to_their_canonical_language() {
+        for provider in ProviderType::iter() {
+            let p = get_provider(provider);
+            let aliases = p.get_language_to_aliases();
+            let reverse = p.get_alias_to_language();
+            for (lang, alias_list) in aliases {
+                for alias in alias_list {
+                    assert_eq!(
+                        reverse.get(alias).map(String::as_str),
+                        Some(lang.as_str()),
+                        "alias {alias} of {lang} does not resolve back to {lang} for {provider}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn supported_languages_are_self_resolving() {
+        for provider in ProviderType::iter() {
+            let p = get_provider(provider);
+            let reverse = p.get_alias_to_language();
+            for lang in p.get_supported_languages() {
+                assert_eq!(
+                    reverse.get(lang).map(String::as_str),
+                    Some(lang.as_str()),
+                    "supported language {lang} missing from reverse map for {provider}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn provider_type_value_enum_parses_known_values() {
+        assert_eq!(
+            ProviderType::from_str("devenv", false).unwrap(),
+            ProviderType::Devenv
+        );
+        assert_eq!(
+            ProviderType::from_str("dev-templates", false).unwrap(),
+            ProviderType::DevTemplates
+        );
+    }
+
+    #[test]
+    fn provider_type_value_enum_rejects_unknown_values() {
+        assert!(ProviderType::from_str("nope", false).is_err());
+        assert!(ProviderType::from_str("DEVENV", true).unwrap() == ProviderType::Devenv);
+        assert!(ProviderType::from_str("DEVENV", false).is_err());
+    }
+}

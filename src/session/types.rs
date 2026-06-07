@@ -128,3 +128,55 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod serde_tests {
+    use super::*;
+    use crate::provider::ProviderType;
+    use std::time::SystemTime;
+
+    fn sample_session() -> Session {
+        Session {
+            id: "deadbeef".into(),
+            provider: ProviderType::Devenv,
+            languages: vec!["rust".into(), "go".into()],
+            last_used_at: SystemTime::UNIX_EPOCH,
+            last_updated_at: SystemTime::UNIX_EPOCH,
+        }
+    }
+
+    #[test]
+    fn session_roundtrips_through_json() {
+        let original = sample_session();
+        let json = serde_json::to_string(&original).unwrap();
+        let restored: Session = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(restored.id, original.id);
+        assert_eq!(restored.provider, original.provider);
+        assert_eq!(restored.languages, original.languages);
+        assert_eq!(restored.last_used_at, original.last_used_at);
+        assert_eq!(restored.last_updated_at, original.last_updated_at);
+    }
+
+    #[test]
+    fn session_json_uses_kebab_case_provider() {
+        let session = Session {
+            id: "abcd1234".into(),
+            provider: ProviderType::DevTemplates,
+            languages: vec!["python".into()],
+            last_used_at: SystemTime::UNIX_EPOCH,
+            last_updated_at: SystemTime::UNIX_EPOCH,
+        };
+        let pretty = serde_json::to_string_pretty(&session).unwrap();
+        assert!(pretty.contains(r#""id": "abcd1234""#));
+        assert!(pretty.contains(r#""provider": "dev-templates""#));
+        assert!(pretty.contains(r#""languages": ["#));
+    }
+
+    #[test]
+    fn session_rejects_json_missing_required_field() {
+        let incomplete = r#"{"id":"abc","provider":"devenv","languages":[]}"#;
+        let err = serde_json::from_str::<Session>(incomplete).unwrap_err();
+        assert!(err.to_string().contains("missing field"));
+    }
+}
