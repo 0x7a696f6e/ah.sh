@@ -11,19 +11,13 @@ permissions:
 
 jobs:
   cachix:
-    name: Cachix (${{ matrix.system }})
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-          - runner: ubuntu-latest
-            system: x86_64-linux
-
-          - runner: ubuntu-24.04-arm
-            system: aarch64-linux
-
-          - runner: macos-latest
-            system: aarch64-darwin
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - macos-latest
 
     steps:
       - name: Checkout
@@ -44,4 +38,4 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build with Nix
-        run: nix build --print-build-logs .#packages.${{ matrix.system }}.ah
+        run: nix build --print-build-logs
