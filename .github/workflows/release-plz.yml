@@ -7,7 +7,6 @@ on:
 
 jobs:
   release-plz-release:
-    name: Release-plz release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -28,7 +27,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-plz-pr:
-    name: Release-plz PR
     runs-on: ubuntu-latest
     permissions:
       contents: write

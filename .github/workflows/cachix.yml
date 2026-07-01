@@ -6,11 +6,9 @@ on:
       - "v*"
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   cachix:
+    name: Cachix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
