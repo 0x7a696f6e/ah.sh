@@ -6,10 +6,9 @@ updates:
     schedule:
       interval: weekly
       day: wednesday
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: auto
     commit-message:
-      prefix: chore
-      scope: cargo
+      prefix: "chore(cargo)"
     labels:
       - cargo
     groups:
@@ -34,7 +33,6 @@ updates:
       interval: weekly
       day: wednesday
     commit-message:
-      prefix: chore
-      scope: nix
+      prefix: "chore(nix)"
     labels:
       - nix
