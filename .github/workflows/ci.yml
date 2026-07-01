@@ -1,10 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    paths-ignore:
+      - "**.md"
+      - ".github/**"
+      - "LICENSE"
+      - "docs/**"
   workflow_dispatch:
 
 permissions:
