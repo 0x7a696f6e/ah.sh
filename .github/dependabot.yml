@@ -26,6 +26,10 @@ updates:
       prefix: ci
     labels:
       - github-actions
+    groups:
+      actions-all:
+        patterns:
+          - "*"
 
   - package-ecosystem: nix
     directory: /
@@ -36,3 +40,7 @@ updates:
       prefix: "chore(nix)"
     labels:
       - nix
+    groups:
+      nix-all:
+        patterns:
+          - "*"
