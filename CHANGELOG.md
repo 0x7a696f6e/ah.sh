@@ -1,0 +1,364 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.0.0](https://github.com/z1-0/ah.sh/releases/tag/v0.0.0) - 2026-07-03
+
+### Added
+
+- move schemars to dev-dependencies with cfg_attr(test)
+- modify provider table display
+- modify session table display
+- improve session list time display with human-readable relative format
+- add language help text to session completion candidates
+- add dynamic shell completions for languages and session keys
+- switch to dynamic shell completion
+- add clap_complete dependency
+- add last_used_at and last_updated_at to session metadata
+- prevent data corruption via atomic file writes
+- log nix version on check_nix_available success
+- add structured logging with tracing and #[instrument]
+- add logging infrastructure with tracing subscriber
+- add custom shell detection with libc integration
+- add Nix availability check before command dispatch
+- add user configuration support with module refactoring
+- preload config on startup to auto-create default
+- add AppConfig struct and load_config()
+- add config module with get_config_path()
+- trigger session history from restore command instead of use
+- add session history prompt in CLI
+- record directory history when entering session
+- add print_session_history function
+- export find_by_path and update_history in session service
+- add update_history and find_by_path functions
+- add HistoryEntry type for session history
+- add cachix workflow for binary caching
+- add top-level update and restore commands as session aliases
+- add ah init command
+- add ah update command
+- add output beautification with table formatting
+- add Init and Update command placeholders
+- *(provider)* parse dev-templates attrs from nix store with cache-first flow
+- *(provider)* add attrs cache with corruption-safe fallback
+- *(provider)* add injectable store resolver with prefetch fallback
+- lock dev-templates flake inputs
+- *(cli)* rename lang command to use
+- *(cli)* rename create to lang command
+- *(cli)* add provider subcommand suite
+- *(dx)* colorize warnings on tty
+- *(cli)* print help on no args and exit 2
+- *(cli)* print help on no args and exit 2
+- add session clear/remove with typed selector and fixed id length
+- cap concurrent dev-template fetch workers
+- deduplicate languages before session generation
+- bind generated flake.nix to session-specific cache directories
+- implement dynamic Nix shell template generation with AST parsing
+- implement dynamic Nix shell template generation with AST parsing for dev-templates
+- implement session management and profile support
+- change default provider to dev-templates
+- remove formatter/linter provisioning and update AGENTS.md build priority
+- add language normalization layer and cli provider support
+- implement static language lists and weekly CI update
+- decouple provider logic and add multi-provider support
+
+### Fixed
+
+- use git-only mode in release-plz for non-published package
+- configure release-plz to handle non-publishable package
+- guard default config write with existence check
+- *(ci)* modify release-plz token
+- *(session)* render inner value in SessionKey Display
+- translate check_nix_available error message to English
+- restore lost tracing-attributes dependency and sync Cargo.lock
+- ensure logs are flushed before process replacement and on exit
+- correct print_error call with single formatted string argument
+- update is_terminal call to is_interactive in manager.rs
+- restore info message when no session history found
+- correct include_str path and remove JsonSchema dependency
+- determine --profile usage by checking if profile file exists
+- optimize session operations and remove redundant path computation
+- clear current session when removing or clearing sessions
+- update comment and optimize string allocation in storage
+- use HISTORY_LIMIT constant instead of hardcoded 5
+- use binary name for app name and align crate name
+- auto-enter dev shell after flake update instead of prompting
+- properly handle nix flake update errors
+- session/mod.rs remove unresolved SessionError import
+- *(executor)* correct nix develop argument flow for session lifecycle
+- *(paths)* use ProjectDirs data/cache roots directly
+- *(provider)* use valid nix flake prefetch fallback command
+- *(provider)* degrade cache read errors to warning and miss
+- persist session metadata when reusing flake
+- reuse existing session flake without overwrite
+
+### Other
+
+- *(cargo)* simplify release profile
+- use GH_PAT for release-plz to trigger downstream workflows
+- standardize job and step naming in workflows
+- drop explicit permissions block
+- *(cachix)* simplify workflow matrix and nix build
+- *(dependabot)* group nix and github-actions updates
+- limit pull_request trigger and add paths-ignore
+- *(nix)* bump nixpkgs from `7a1a647` to `e52c192` ([#20](https://github.com/z1-0/ah.sh/pull/20))
+- bump actions/checkout from 6 to 7 ([#16](https://github.com/z1-0/ah.sh/pull/16))
+- *(nix)* bump fenix from `df161b9` to `16810aa` ([#17](https://github.com/z1-0/ah.sh/pull/17))
+- *(nix)* bump git-hooks-nix from `3bbec39` to `9f7e991` ([#18](https://github.com/z1-0/ah.sh/pull/18))
+- *(nix)* bump advisory-db from `1e3b508` to `4075127` ([#21](https://github.com/z1-0/ah.sh/pull/21))
+- *(cargo)* bump the cargo-minor-and-patch group with 3 updates ([#19](https://github.com/z1-0/ah.sh/pull/19))
+- *(dependabot)* fix invalid scope and versioning-strategy
+- add aarch64-linux to Cachix build matrix
+- add nix flake check workflows
+- add release-plz
+- *(nix)* migrate to fenix + crane
+- bump actions/checkout from 6 to 7 ([#15](https://github.com/z1-0/ah.sh/pull/15))
+- bump config from 0.15.23 to 0.15.24 in the cargo-minor-and-patch group ([#14](https://github.com/z1-0/ah.sh/pull/14))
+- update supported languages list ([#13](https://github.com/z1-0/ah.sh/pull/13))
+- add unit tests for cli and provider
+- add unit tests for privider and session
+- migrate flake updates to dependabot
+- bump cachix/cachix-action from 15 to 17 ([#12](https://github.com/z1-0/ah.sh/pull/12))
+- update dependabot.yaml
+- *(deps)* bump the cargo-minor-and-patch group with 3 updates ([#11](https://github.com/z1-0/ah.sh/pull/11))
+- *(deps)* bump peter-evans/create-pull-request from 6 to 8 ([#10](https://github.com/z1-0/ah.sh/pull/10))
+- *(deps)* bump actions/checkout from 4 to 6 ([#8](https://github.com/z1-0/ah.sh/pull/8))
+- *(deps)* bump DeterminateSystems/update-flake-lock from 24 to 28 ([#9](https://github.com/z1-0/ah.sh/pull/9))
+- *(deps)* bump cachix/install-nix-action from 30 to 31 ([#7](https://github.com/z1-0/ah.sh/pull/7))
+- *(deps)* bump actions/github-script from 7 to 9 ([#6](https://github.com/z1-0/ah.sh/pull/6))
+- add dependabot and flake.lock update workflow
+- update supported languages list ([#5](https://github.com/z1-0/ah.sh/pull/5))
+- update supported languages list ([#4](https://github.com/z1-0/ah.sh/pull/4))
+- add readme
+- update flake.lock
+- show nix flake update output inline and simplify return type
+- deduplicate parent-dir creation and simplify error handling
+- propagate config errors instead of inline process::exit
+- integrate LogLevel enum into log filtering with release profile
+- extract LogLevel enum and integrate into config
+- restore completion subcommand for dynamic generation
+- reorder nix develop setup and add last_used_at touch
+- unify import style across codebase
+- clean up fs-err usage, fix TOCTOU and deduplicate history logic
+- complete std::fs to fs-err migration and clean context
+- migrate to fs-err and clean context
+- migrate to fs-err and clean context
+- add fs-err dependency
+- return Result<Session> from try_session_by_*
+- optimize lookup logic and improve error context
+- refine error messages and log output
+- add #[instrument] tracing to cmd, session and dev_templates modules
+- add structured logging to cmd, session and dev_templates modules
+- add #[instrument] to manager functions and clean up output
+- update flake.lock
+- backup and clean up release-please workflow
+- migrate to release-please with Cargo.lock fixup support
+- rename stderr_layer to console_layer
+- simplify check_nix_available with match expression
+- clean up logging implementation issues
+- return WorkerGuard from log init instead of leaking it
+- unify anyhow usage patterns
+- remove redundant check_nix_available calls
+- use anyhow::Result and fully qualified macro paths
+- simplify check_nix_available with chain-style error handling
+- inline build_nix_develop_cmd into nix_develop_of_session
+- format code with cargo fmt
+- migrate from console to crossterm
+- remove implicit use command and simplify CLI structure
+- clean up utils.rs and optimize buffer size
+- simplify CLI args in types.rs and make provider optional
+- inline exec/run in cmd.rs and simplify error messages
+- simplify language grouping with bucket sort approach
+- update flake.lock
+- upgrade clap to 4.6.1
+- exclude config.schema.json from treefmt and restructure config
+- upgrade schemars to 1.2 and toml to 1.1, add $schema to default config
+- simplify provider API and enhance provider information output
+- remove redundant error context messages and comments
+- improve build error messages with specific context
+- restructure config initialization and path module organization
+- update dependencies and improve error messages
+- HashMap capacity pre-allocation and clean up provider list
+- code cleanup and formatting improvements
+- migrate OnceLock to LazyLock and simplify provider initialization
+- remove redundant comments
+- rename to path.rs and optimize module structure
+- translate config-related comments to English
+- remove ProviderShowSelector, use ProviderType directly
+- remove unused use_profile parameter from nix_develop_of_session
+- rename path constants for clarity
+- reorder CLI command match arms for logical grouping
+- update supported languages list ([#3](https://github.com/z1-0/ah.sh/pull/3))
+- simplify nix develop profile path handling
+- centralize session file/directory names in paths.rs
+- increase HISTORY_LIMIT from 3 to 64
+- inline read_session_from_path and update return types
+- simplify session storage with helper functions and remove TOCTOU
+- extract session reading logic and use FP style
+- rename session lookup functions for consistency
+- extract session lookup functions to storage module
+- extract session lookup helpers and simplify remove_sessions
+- optimize session lookups and remove unused find_in_list
+- finalize session module structure
+- move non-storage logic to mod.rs and improve naming
+- remove service layer in session module
+- improve error handling and simplify current session cleanup
+- remove chrono dependency and simplify history.json
+- simplify session history display with reusable table
+- combine nested if-let conditions with && operator
+- use &&let syntax and remove unnecessary clone
+- use DateTime<Utc> for timestamp instead of String
+- add get_cwd utility and deduplicate current_dir calls
+- extract HISTORY_LIMIT constant for session history
+- update Cargo.lock with chrono dependency
+- add .worktrees to gitignore
+- use APP_NAME constant and handle missing session dir
+- remove unused code and add provider alias cache
+- remove init command and fix crate name
+- remove documentation files
+- migrate to release-plz for automated releases
+- add enterprise-ready project setup
+- extract provider types to dedicated types.rs module
+- extract shared nix develop command setup
+- improve CLI help text for better readability
+- remove duplicate exec function, reuse from cmd module
+- introduce domain-specific type aliases and consolidate language handling
+- extract provider detection logic in implicit use
+- move Provider loading logic to provider module
+- consolidate provider module and rename types
+- update supported languages list ([#2](https://github.com/z1-0/ah.sh/pull/2))
+- rename language update workflow and outputs
+- unify provider selection flow
+- language module and centralize language normalization
+- remove hardcoded exit-code string matching
+- consolidate language mapping functions and remove duplication
+- improve error handling in get_nix_store_path
+- simplify dev-templates provider and fix index mapping bug
+- remove tracing dependency and use print/eprintln for CLI output
+- cleanup language_maps.rs
+- use bail! instead of anyhow! for error returns
+- optimize language normalization and session lookup
+- eliminate boolean parameter smell and strengthen type safety
+- simplify provider/session dispatch and clarify nix develop intent
+- remove session_dir field and simplify control flow
+- switch provider abstraction to function dispatch
+- replace ProviderInfo with ProviderType helpers
+- remove EnsureFilesResult from provider flow
+- provider/dev_templates/mod.rs use anyhow + tracing
+- provider/language_maps.rs use anyhow
+- provider/devenv/mod.rs use anyhow
+- provider/types.rs remove AppWarning, use anyhow
+- provider/registry.rs use anyhow
+- manager.rs use tracing for logs, keep println for output
+- session/service.rs use anyhow + tracing
+- cmd.rs use anyhow, replace eprintln with tracing
+- session/types.rs remove SessionError, use anyhow
+- storage.rs use anyhow
+- cli/mod.rs use anyhow
+- paths.rs use anyhow
+- delete error.rs and warning.rs - using anyhow + tracing instead
+- remove error/warning module exports from lib.rs
+- add tracing init in main.rs
+- add anyhow/tracing, remove thiserror
+- add anyhow tracing refactor implementation plan
+- update error logging tracing design - all anyhow + tracing
+- add error logging tracing design spec
+- *(dev_templates)* inline store_resolver functions and simplify prefetch
+- *(dev_templates)* single prefetch for dev-templates repo
+- *(dev_templates)* replace manual thread pool with rayon
+- *(dev_templates)* simplify store_resolver by removing over-engineered abstraction
+- *(cmd)* centralize command execution and errors
+- *(cmd)* rename executor module
+- *(provider)* streamline dev-templates prefetch parsing
+- *(debug)* simplify exec command logging output
+- *(session)* simplify unified session model usage
+- *(session)* centralize public types and update call sites
+- *(session)* move session ordering to directory mtime
+- *(session)* consolidate session model and remove in-tree tests
+- *(provider)* centralize attrs cache path and remove dev-templates tests
+- *(provider)* remove legacy dev-templates fetcher path
+- *(tests)* reduce resolver fake runner type complexity
+- *(provider)* keep task5 scoped to flake generator
+- *(provider)* switch dev-templates pipeline to lock-probe + store resolver
+- *(provider)* stabilize resolver tests with injectable flake reader
+- *(provider)* harden resolver error mapping and flake reading
+- *(provider)* format gen file
+- *(paths)* move session dir helper to paths module
+- refresh flake inputs and path helpers
+- *(provider)* remove unused registry helpers
+- *(provider)* separate metadata from shell execution
+- remove test code and dependencies
+- rename providers module to provider
+- move --provider to use subcommand and implement robust implicit use induction
+- update README with installation guides and use cases
+- add cachix github action workflow
+- *(providers)* consolidate language map handling
+- *(providers)* move language mappings per provider
+- *(paths)* use directories crate for xdg paths
+- *(session)* remove app layer wrapper
+- update README usage guide
+- clear
+- *(format)* drop markdownlint
+- *(deps)* bump clap/rnix/rowan
+- *(dx)* avoid cloning warnings when printing
+- *(fmt)* apply rustfmt after warning order test
+- *(dx)* ensure warning order is stable
+- *(fmt)* apply rustfmt after adding tests
+- *(providers)* strengthen nix parser and flake generator tests
+- *(providers)* cover flake parsing and generation
+- *(providers)* cover language normalize and validate
+- *(session)* cover SessionKey parsing
+- *(fmt)* format SessionApp imports
+- *(app)* route session create through SessionApp
+- *(app)* route session restore through SessionApp
+- *(app)* route session remove/clear through SessionApp
+- *(app)* restrict SessionApp visibility
+- *(app)* route session list through SessionApp
+- add trailing newlines to layer modules
+- add layering module skeleton
+- *(providers)* make language normalization fallible
+- *(providers)* fail-fast on invalid language aliases
+- plumb structured warnings and remove library eprintln
+- *(cli)* avoid unreachable when session restore diverges
+- *(executor)* return diverging Result and surface exec errors
+- update Cargo.lock
+- rustfmt session module
+- Revert "feat(cli): print help on no args and exit 2"
+- reduce brittleness in CLI contract assertions
+- tighten CLI no-args help contract
+- add CLI contract
+- remove stray completion promise from plan
+- add project-wide refactor implementation plan
+- tighten refactor spec contracts
+- add project-wide refactor design spec
+- align session module exports
+- move session service
+- add session storage
+- add session struct
+- add session module types
+- add session module types
+- add session module refactor plan
+- ignore .worktrees directory
+- clarify session module refactor spec
+- add session module refactor design
+- comment on no-change runs
+- update supported languages list ([#1](https://github.com/z1-0/ah.sh/pull/1))
+- grant workflow write permissions for automated PRs
+- refactor session management and remove flow
+- rename selector var
+- move SessionError into sessions module
+- rename AhError to AppError
+- cover best-effort cache write fallback
+- reduce session setup overhead and lint noise
+- optimize project structure and improve separation of concerns
+- simplify session execution and add debug logging
+- remove ProviderAssetManager and simplify provider architecture
+- split exec_nix_develop to use profile for builder and session
+- initialize editorconfig and update nix flakes
+- implement senior-architect-grade refactoring (custom errors, DRY providers, and decoupled CLI)
+- embed provider templates as assets and sync to ~/.local/share/ah at runtime
+- abstract provider logic into traits and optimize resource path handling
