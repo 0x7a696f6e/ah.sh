@@ -147,12 +147,11 @@ pub fn update_session(key: Option<&SessionKey>) -> Result<()> {
     if was_updated {
         output::print_success("Dependencies updated.");
         output::print_bold("Entering develop shell...");
-        nix_develop_of_session(session)?
+        nix_develop_of_session(session)
     } else {
         output::print_bold("Dependencies are already up to date.");
+        Ok(())
     }
-
-    Ok(())
 }
 
 #[instrument(skip_all)]

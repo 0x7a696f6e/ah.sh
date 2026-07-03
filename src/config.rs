@@ -31,7 +31,9 @@ pub fn init() {
 fn load_config() -> Result<()> {
     let config_path = path::config::get_config_file();
     let default_config = include_str!("assets/default_config.toml");
-    util::atomic_write(&config_path, default_config)?;
+    if !config_path.exists() {
+        util::atomic_write(&config_path, default_config)?;
+    }
 
     let file_source = File::from(config_path.as_path())
         .format(FileFormat::Toml)
