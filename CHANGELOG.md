@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.0](https://github.com/z1-0/ah.sh/releases/tag/v0.0.0) - 2026-07-03
+## [0.1.0](https://github.com/z1-0/ah.sh/releases/tag/v0.1.0) - 2026-07-03
 
 ### Added
 
@@ -43,16 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add ah update command
 - add output beautification with table formatting
 - add Init and Update command placeholders
-- *(provider)* parse dev-templates attrs from nix store with cache-first flow
-- *(provider)* add attrs cache with corruption-safe fallback
-- *(provider)* add injectable store resolver with prefetch fallback
+- _(provider)_ parse dev-templates attrs from nix store with cache-first flow
+- _(provider)_ add attrs cache with corruption-safe fallback
+- _(provider)_ add injectable store resolver with prefetch fallback
 - lock dev-templates flake inputs
-- *(cli)* rename lang command to use
-- *(cli)* rename create to lang command
-- *(cli)* add provider subcommand suite
-- *(dx)* colorize warnings on tty
-- *(cli)* print help on no args and exit 2
-- *(cli)* print help on no args and exit 2
+- _(cli)_ rename lang command to use
+- _(cli)_ rename create to lang command
+- _(cli)_ add provider subcommand suite
+- _(dx)_ colorize warnings on tty
+- _(cli)_ print help on no args and exit 2
+- _(cli)_ print help on no args and exit 2
 - add session clear/remove with typed selector and fixed id length
 - cap concurrent dev-template fetch workers
 - deduplicate languages before session generation
@@ -68,11 +68,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- _(ci)_ exclude CHANGELOG.md from treefmt to prevent release-plz format conflicts
+- set initial version to 0.1.0 to enable release-plz release
 - use git-only mode in release-plz for non-published package
 - configure release-plz to handle non-publishable package
 - guard default config write with existence check
-- *(ci)* modify release-plz token
-- *(session)* render inner value in SessionKey Display
+- _(ci)_ modify release-plz token
+- _(session)_ render inner value in SessionKey Display
 - translate check_nix_available error message to English
 - restore lost tracing-attributes dependency and sync Cargo.lock
 - ensure logs are flushed before process replacement and on exit
@@ -89,33 +91,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-enter dev shell after flake update instead of prompting
 - properly handle nix flake update errors
 - session/mod.rs remove unresolved SessionError import
-- *(executor)* correct nix develop argument flow for session lifecycle
-- *(paths)* use ProjectDirs data/cache roots directly
-- *(provider)* use valid nix flake prefetch fallback command
-- *(provider)* degrade cache read errors to warning and miss
+- _(executor)_ correct nix develop argument flow for session lifecycle
+- _(paths)_ use ProjectDirs data/cache roots directly
+- _(provider)_ use valid nix flake prefetch fallback command
+- _(provider)_ degrade cache read errors to warning and miss
 - persist session metadata when reusing flake
 - reuse existing session flake without overwrite
 
 ### Other
 
-- *(cargo)* simplify release profile
+- release v0.0.0 ([#22](https://github.com/z1-0/ah.sh/pull/22))
+- _(cargo)_ simplify release profile
 - use GH_PAT for release-plz to trigger downstream workflows
 - standardize job and step naming in workflows
 - drop explicit permissions block
-- *(cachix)* simplify workflow matrix and nix build
-- *(dependabot)* group nix and github-actions updates
+- _(cachix)_ simplify workflow matrix and nix build
+- _(dependabot)_ group nix and github-actions updates
 - limit pull_request trigger and add paths-ignore
-- *(nix)* bump nixpkgs from `7a1a647` to `e52c192` ([#20](https://github.com/z1-0/ah.sh/pull/20))
+- _(nix)_ bump nixpkgs from `7a1a647` to `e52c192` ([#20](https://github.com/z1-0/ah.sh/pull/20))
 - bump actions/checkout from 6 to 7 ([#16](https://github.com/z1-0/ah.sh/pull/16))
-- *(nix)* bump fenix from `df161b9` to `16810aa` ([#17](https://github.com/z1-0/ah.sh/pull/17))
-- *(nix)* bump git-hooks-nix from `3bbec39` to `9f7e991` ([#18](https://github.com/z1-0/ah.sh/pull/18))
-- *(nix)* bump advisory-db from `1e3b508` to `4075127` ([#21](https://github.com/z1-0/ah.sh/pull/21))
-- *(cargo)* bump the cargo-minor-and-patch group with 3 updates ([#19](https://github.com/z1-0/ah.sh/pull/19))
-- *(dependabot)* fix invalid scope and versioning-strategy
+- _(nix)_ bump fenix from `df161b9` to `16810aa` ([#17](https://github.com/z1-0/ah.sh/pull/17))
+- _(nix)_ bump git-hooks-nix from `3bbec39` to `9f7e991` ([#18](https://github.com/z1-0/ah.sh/pull/18))
+- _(nix)_ bump advisory-db from `1e3b508` to `4075127` ([#21](https://github.com/z1-0/ah.sh/pull/21))
+- _(cargo)_ bump the cargo-minor-and-patch group with 3 updates ([#19](https://github.com/z1-0/ah.sh/pull/19))
+- _(dependabot)_ fix invalid scope and versioning-strategy
 - add aarch64-linux to Cachix build matrix
 - add nix flake check workflows
 - add release-plz
-- *(nix)* migrate to fenix + crane
+- _(nix)_ migrate to fenix + crane
 - bump actions/checkout from 6 to 7 ([#15](https://github.com/z1-0/ah.sh/pull/15))
 - bump config from 0.15.23 to 0.15.24 in the cargo-minor-and-patch group ([#14](https://github.com/z1-0/ah.sh/pull/14))
 - update supported languages list ([#13](https://github.com/z1-0/ah.sh/pull/13))
@@ -124,12 +127,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - migrate flake updates to dependabot
 - bump cachix/cachix-action from 15 to 17 ([#12](https://github.com/z1-0/ah.sh/pull/12))
 - update dependabot.yaml
-- *(deps)* bump the cargo-minor-and-patch group with 3 updates ([#11](https://github.com/z1-0/ah.sh/pull/11))
-- *(deps)* bump peter-evans/create-pull-request from 6 to 8 ([#10](https://github.com/z1-0/ah.sh/pull/10))
-- *(deps)* bump actions/checkout from 4 to 6 ([#8](https://github.com/z1-0/ah.sh/pull/8))
-- *(deps)* bump DeterminateSystems/update-flake-lock from 24 to 28 ([#9](https://github.com/z1-0/ah.sh/pull/9))
-- *(deps)* bump cachix/install-nix-action from 30 to 31 ([#7](https://github.com/z1-0/ah.sh/pull/7))
-- *(deps)* bump actions/github-script from 7 to 9 ([#6](https://github.com/z1-0/ah.sh/pull/6))
+- _(deps)_ bump the cargo-minor-and-patch group with 3 updates ([#11](https://github.com/z1-0/ah.sh/pull/11))
+- _(deps)_ bump peter-evans/create-pull-request from 6 to 8 ([#10](https://github.com/z1-0/ah.sh/pull/10))
+- _(deps)_ bump actions/checkout from 4 to 6 ([#8](https://github.com/z1-0/ah.sh/pull/8))
+- _(deps)_ bump DeterminateSystems/update-flake-lock from 24 to 28 ([#9](https://github.com/z1-0/ah.sh/pull/9))
+- _(deps)_ bump cachix/install-nix-action from 30 to 31 ([#7](https://github.com/z1-0/ah.sh/pull/7))
+- _(deps)_ bump actions/github-script from 7 to 9 ([#6](https://github.com/z1-0/ah.sh/pull/6))
 - add dependabot and flake.lock update workflow
 - update supported languages list ([#5](https://github.com/z1-0/ah.sh/pull/5))
 - update supported languages list ([#4](https://github.com/z1-0/ah.sh/pull/4))
@@ -148,7 +151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - migrate to fs-err and clean context
 - migrate to fs-err and clean context
 - add fs-err dependency
-- return Result<Session> from try_session_by_*
+- return Result<Session> from try*session_by*\*
 - optimize lookup logic and improve error context
 - refine error messages and log output
 - add #[instrument] tracing to cmd, session and dev_templates modules
@@ -267,64 +270,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add anyhow tracing refactor implementation plan
 - update error logging tracing design - all anyhow + tracing
 - add error logging tracing design spec
-- *(dev_templates)* inline store_resolver functions and simplify prefetch
-- *(dev_templates)* single prefetch for dev-templates repo
-- *(dev_templates)* replace manual thread pool with rayon
-- *(dev_templates)* simplify store_resolver by removing over-engineered abstraction
-- *(cmd)* centralize command execution and errors
-- *(cmd)* rename executor module
-- *(provider)* streamline dev-templates prefetch parsing
-- *(debug)* simplify exec command logging output
-- *(session)* simplify unified session model usage
-- *(session)* centralize public types and update call sites
-- *(session)* move session ordering to directory mtime
-- *(session)* consolidate session model and remove in-tree tests
-- *(provider)* centralize attrs cache path and remove dev-templates tests
-- *(provider)* remove legacy dev-templates fetcher path
-- *(tests)* reduce resolver fake runner type complexity
-- *(provider)* keep task5 scoped to flake generator
-- *(provider)* switch dev-templates pipeline to lock-probe + store resolver
-- *(provider)* stabilize resolver tests with injectable flake reader
-- *(provider)* harden resolver error mapping and flake reading
-- *(provider)* format gen file
-- *(paths)* move session dir helper to paths module
+- _(dev_templates)_ inline store_resolver functions and simplify prefetch
+- _(dev_templates)_ single prefetch for dev-templates repo
+- _(dev_templates)_ replace manual thread pool with rayon
+- _(dev_templates)_ simplify store_resolver by removing over-engineered abstraction
+- _(cmd)_ centralize command execution and errors
+- _(cmd)_ rename executor module
+- _(provider)_ streamline dev-templates prefetch parsing
+- _(debug)_ simplify exec command logging output
+- _(session)_ simplify unified session model usage
+- _(session)_ centralize public types and update call sites
+- _(session)_ move session ordering to directory mtime
+- _(session)_ consolidate session model and remove in-tree tests
+- _(provider)_ centralize attrs cache path and remove dev-templates tests
+- _(provider)_ remove legacy dev-templates fetcher path
+- _(tests)_ reduce resolver fake runner type complexity
+- _(provider)_ keep task5 scoped to flake generator
+- _(provider)_ switch dev-templates pipeline to lock-probe + store resolver
+- _(provider)_ stabilize resolver tests with injectable flake reader
+- _(provider)_ harden resolver error mapping and flake reading
+- _(provider)_ format gen file
+- _(paths)_ move session dir helper to paths module
 - refresh flake inputs and path helpers
-- *(provider)* remove unused registry helpers
-- *(provider)* separate metadata from shell execution
+- _(provider)_ remove unused registry helpers
+- _(provider)_ separate metadata from shell execution
 - remove test code and dependencies
 - rename providers module to provider
 - move --provider to use subcommand and implement robust implicit use induction
 - update README with installation guides and use cases
 - add cachix github action workflow
-- *(providers)* consolidate language map handling
-- *(providers)* move language mappings per provider
-- *(paths)* use directories crate for xdg paths
-- *(session)* remove app layer wrapper
+- _(providers)_ consolidate language map handling
+- _(providers)_ move language mappings per provider
+- _(paths)_ use directories crate for xdg paths
+- _(session)_ remove app layer wrapper
 - update README usage guide
 - clear
-- *(format)* drop markdownlint
-- *(deps)* bump clap/rnix/rowan
-- *(dx)* avoid cloning warnings when printing
-- *(fmt)* apply rustfmt after warning order test
-- *(dx)* ensure warning order is stable
-- *(fmt)* apply rustfmt after adding tests
-- *(providers)* strengthen nix parser and flake generator tests
-- *(providers)* cover flake parsing and generation
-- *(providers)* cover language normalize and validate
-- *(session)* cover SessionKey parsing
-- *(fmt)* format SessionApp imports
-- *(app)* route session create through SessionApp
-- *(app)* route session restore through SessionApp
-- *(app)* route session remove/clear through SessionApp
-- *(app)* restrict SessionApp visibility
-- *(app)* route session list through SessionApp
+- _(format)_ drop markdownlint
+- _(deps)_ bump clap/rnix/rowan
+- _(dx)_ avoid cloning warnings when printing
+- _(fmt)_ apply rustfmt after warning order test
+- _(dx)_ ensure warning order is stable
+- _(fmt)_ apply rustfmt after adding tests
+- _(providers)_ strengthen nix parser and flake generator tests
+- _(providers)_ cover flake parsing and generation
+- _(providers)_ cover language normalize and validate
+- _(session)_ cover SessionKey parsing
+- _(fmt)_ format SessionApp imports
+- _(app)_ route session create through SessionApp
+- _(app)_ route session restore through SessionApp
+- _(app)_ route session remove/clear through SessionApp
+- _(app)_ restrict SessionApp visibility
+- _(app)_ route session list through SessionApp
 - add trailing newlines to layer modules
 - add layering module skeleton
-- *(providers)* make language normalization fallible
-- *(providers)* fail-fast on invalid language aliases
+- _(providers)_ make language normalization fallible
+- _(providers)_ fail-fast on invalid language aliases
 - plumb structured warnings and remove library eprintln
-- *(cli)* avoid unreachable when session restore diverges
-- *(executor)* return diverging Result and surface exec errors
+- _(cli)_ avoid unreachable when session restore diverges
+- _(executor)_ return diverging Result and surface exec errors
 - update Cargo.lock
 - rustfmt session module
 - Revert "feat(cli): print help on no args and exit 2"
