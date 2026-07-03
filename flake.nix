@@ -132,7 +132,10 @@
               package = fenixPkgs.latest.rustfmt;
             };
           };
-          treefmt.settings.excludes = [ "src/assets/config.schema.json" ];
+          treefmt.settings.excludes = [
+            "src/assets/config.schema.json"
+            "CHANGELOG.md"
+          ];
         };
     };
 }
