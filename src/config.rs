@@ -10,7 +10,8 @@ use crate::path;
 use crate::provider::ProviderType;
 use crate::util;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, schemars::JsonSchema)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(test, derive(schemars::JsonSchema))]
 pub struct AppConfig {
     pub log: Option<LogLevel>,
     pub provider: ProviderType,

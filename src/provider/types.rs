@@ -12,10 +12,10 @@ use std::collections::HashMap;
     serde::Serialize,
     strum::Display,
     strum::EnumIter,
-    schemars::JsonSchema,
 )]
 #[strum(serialize_all = "kebab-case")]
 #[serde(rename_all = "kebab-case")]
+#[cfg_attr(test, derive(schemars::JsonSchema))]
 pub enum ProviderType {
     Devenv,
     DevTemplates,

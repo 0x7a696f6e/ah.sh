@@ -1,15 +1,9 @@
 #[derive(
-    Clone,
-    Copy,
-    Debug,
-    schemars::JsonSchema,
-    serde::Deserialize,
-    serde::Serialize,
-    strum::Display,
-    strum::EnumString,
+    Clone, Copy, Debug, serde::Deserialize, serde::Serialize, strum::Display, strum::EnumString,
 )]
 #[strum(serialize_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
+#[cfg_attr(test, derive(schemars::JsonSchema))]
 pub enum LogLevel {
     TRACE,
     DEBUG,
