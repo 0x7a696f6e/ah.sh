@@ -23,7 +23,7 @@ github-actions = { repository = "z1-0/ah.sh" }
 
 [profile.release]
 opt-level = 3
-lto = "fat"
+lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
