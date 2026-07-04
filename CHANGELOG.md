@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1](https://github.com/z1-0/ah.sh/compare/v0.1.0...v0.1.1) - 2026-07-04
+
+### Added
+
+- *(build)* replace fenix with rust-overlay for toolchain
+
 ## [0.1.0](https://github.com/z1-0/ah.sh/releases/tag/v0.1.0) - 2026-07-03
 
 ### Added
