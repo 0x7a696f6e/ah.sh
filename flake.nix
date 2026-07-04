@@ -2,10 +2,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     crane.url = "github:ipetkov/crane";
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -49,12 +45,9 @@
           ...
         }:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [ rust-overlay.overlays.default ];
-          };
+          pkgs = import nixpkgs { inherit system; };
 
-          craneLib = (crane.mkLib pkgs).overrideToolchain (p: p.rust-bin.stable.latest.default);
+          craneLib = crane.mkLib pkgs;
 
           src = lib.cleanSourceWith {
             filter =
@@ -99,6 +92,7 @@
           apps.default = {
             type = "app";
             program = lib.getExe' ah "ah";
+            meta.description = "ah.sh - Ad-hoc development shell manager powered by Nix";
           };
 
           devShells.default = craneLib.devShell {
@@ -108,8 +102,7 @@
               (lib.attrValues config.treefmt.build.programs)
               ++ config.pre-commit.settings.enabledPackages
               ++ [
-                pkgs.rust-bin.stable.latest.rust-analyzer
-                pkgs.rust-bin.stable.latest.rust-src
+                pkgs.rust-analyzer
               ];
           };
 
@@ -136,19 +129,21 @@
                 enable = true;
               });
 
-          treefmt.programs = {
-            nixfmt.enable = true;
-            prettier.enable = true;
-            taplo.enable = true;
-            rustfmt = {
-              enable = true;
-              package = pkgs.rust-bin.stable.latest.rustfmt;
+          treefmt = {
+            programs = {
+              nixfmt.enable = true;
+              prettier.enable = true;
+              taplo.enable = true;
+              rustfmt = {
+                enable = true;
+                package = pkgs.rustfmt;
+              };
             };
+            settings.excludes = [
+              "src/assets/config.schema.json"
+              "CHANGELOG.md"
+            ];
           };
-          treefmt.settings.excludes = [
-            "src/assets/config.schema.json"
-            "CHANGELOG.md"
-          ];
         };
     };
 }
