@@ -1,4 +1,4 @@
-name: Release-please
+name: Release please
 
 on:
   push:
@@ -15,6 +15,6 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v5
         with:
-          token: ${{ secrets.GH_PAT }}
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
+          token: ${{ secrets.GH_PAT }}
