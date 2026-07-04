@@ -2,8 +2,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     crane.url = "github:ipetkov/crane";
-    fenix = {
-      url = "github:nix-community/fenix";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-parts = {
@@ -45,23 +45,30 @@
         {
           config,
           system,
-          pkgs,
           lib,
           ...
         }:
         let
-          fenixPkgs = fenix.packages.${system};
-          craneLib = (crane.mkLib pkgs).overrideToolchain fenixPkgs.latest.toolchain;
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ rust-overlay.overlays.default ];
+          };
+
+          craneLib = (crane.mkLib pkgs).overrideToolchain (p: p.rust-bin.stable.latest.default);
+
           src = lib.cleanSourceWith {
             filter =
               path: type: (builtins.match ".*assets/.*" path) != null || craneLib.filterCargoSources path type;
             src = ./.;
           };
+
           commonArgs = {
             inherit src;
             strictDeps = true;
           };
+
           cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+
           ah = craneLib.buildPackage (
             commonArgs
             // {
@@ -88,6 +95,7 @@
             inherit ah;
             default = ah;
           };
+
           apps.default = {
             type = "app";
             program = lib.getExe' ah "ah";
@@ -97,7 +105,12 @@
             inherit (config.pre-commit.devShell) shellHook;
             checks = self.checks.${system};
             packages =
-              (lib.attrValues config.treefmt.build.programs) ++ config.pre-commit.settings.enabledPackages;
+              (lib.attrValues config.treefmt.build.programs)
+              ++ config.pre-commit.settings.enabledPackages
+              ++ [
+                pkgs.rust-bin.stable.latest.rust-analyzer
+                pkgs.rust-bin.stable.latest.rust-src
+              ];
           };
 
           pre-commit.settings.hooks = {
@@ -129,7 +142,7 @@
             taplo.enable = true;
             rustfmt = {
               enable = true;
-              package = fenixPkgs.latest.rustfmt;
+              package = pkgs.rust-bin.stable.latest.rustfmt;
             };
           };
           treefmt.settings.excludes = [
