@@ -1,6 +1,0 @@
-[workspace]
-git_only = true
-
-[[package]]
-name = "ah-sh"
-publish = false
