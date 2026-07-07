@@ -110,13 +110,18 @@ Closes #123
 
 ```
 src/
-├── cli/          # Command-line parsing
-├── provider/     # Provider abstraction and implementation
-├── session/      # Session management
-├── cmd.rs        # Shell command execution
-├── manager.rs    # Core business orchestration
-└── paths.rs      # Path utilities
-
+├── cli/          # Command-line parsing and completions
+├── provider/     # Provider abstraction (devenv, dev-templates)
+│   ├── dev_templates/  # Flake generation with Nix AST parsing
+│   └── devenv/         # Devenv flake generation
+├── session/      # Session lifecycle and storage
+├── assets/       # Embedded config, schemas, and language lists
+├── cmd.rs        # Nix command execution (develop, flake update)
+├── config.rs     # TOML + env config loading
+├── manager.rs    # Core business logic orchestration
+├── output.rs     # Terminal output and table formatting
+├── path.rs       # XDG-compliant path management
+└── util.rs       # Shared utilities
 ```
 
 ### Testing
