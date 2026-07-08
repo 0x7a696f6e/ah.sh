@@ -1,13 +1,5 @@
 <div align="center">
 
-```
-    █████   ██  ██
-   ██   ██  ██  ██
-   ███████  ██████
-   ██   ██  ██  ██
-   ██   ██  ██  ██ .sh
-```
-
 # ah.sh
 
 _Magic development environments powered by Nix_
@@ -31,7 +23,8 @@ ah rust go
 
 - **Instant dev shells** — type `ah rust` and you're in a shell with the Rust toolchain ready
 - **Session management** — sessions are persisted and can be listed, restored, updated, or removed
-- **Multiple providers** — choose between [devenv](https://devenv.sh) (59 languages) and [dev-templates](https://github.com/the-nix-way/dev-templates) (46 templates)
+- **Zero Nix boilerplate** — Leverage pre-configured community templates without the burden of maintaining them yourself
+- **Multiple providers** — Choose [devenv](https://devenv.sh) or [dev-templates](https://github.com/the-nix-way/dev-templates) based on your project needs
 - **Language aliases** — use `py` instead of `python`, `ts` instead of `typescript`, `cpp` instead of `cplusplus`
 - **Directory history** — `ah restore` remembers which sessions you used in each directory
 - **Nix profiles** — subsequent shell entries are near-instant thanks to cached Nix profiles
@@ -204,19 +197,10 @@ AH_PROVIDER=devenv ah rust
 
 ## Supported Languages
 
-<details>
-<summary><strong>devenv</strong> — 59 languages</summary>
+You can find the full list of supported languages and tools for each provider directly in the source files:
 
-ansible, c, clojure, cplusplus (cpp), crystal, cue, dart, deno, dotnet, elixir, elm, erlang, fortran, gawk, gleam, go, hare, haskell, helm, idris, java, javascript (js), jsonnet, julia, kotlin, lean4, lobster, lua, nim, nix, ocaml, odin, opentofu, pascal, perl, php, pkl, purescript, python (py), r, racket, raku, robotframework, ruby, rust, scala, shell (sh, bash), solidity, standardml, swift, terraform, texlive, typescript (ts), typst, unison, v, vala, zig
-
-</details>
-
-<details>
-<summary><strong>dev-templates</strong> — 46 templates</summary>
-
-bun, c-cpp, clojure, csharp, cue, deno, dhall, elixir, elm, empty, gleam, go, hashi, haskell, haxe, java, jupyter, kotlin, latex, lean4, nickel, nim, nix, node (js, javascript, nodejs), ocaml, odin, opa, php, platformio, powershell, presenterm, protobuf, pulumi, purescript, python (py), r, ruby, rust, scala, shell (sh, bash), swi-prolog, swift, typst, vlang, zig
-
-</details>
+- **[devenv](src/assets/providers/devenv/supported_languages.json)**
+- **[dev-templates](src/assets/providers/dev-templates/supported_languages.json)**
 
 ## How It Works
 
@@ -225,3 +209,11 @@ bun, c-cpp, clojure, csharp, cue, deno, dhall, elixir, elm, empty, gleam, go, ha
 3. Otherwise, `ah` generates a `flake.nix` tailored to your languages, builds it, and drops you into a `nix develop` shell
 4. Session metadata is persisted so you can list, restore, update, or remove it later
 5. Directory history tracks which sessions you used where, enabling quick `ah restore` lookups
+
+### Session Reuse & Limitations
+
+Sessions in `ah` are uniquely identified by the combination of the **Provider** and the **Languages** requested (e.g., `devenv` + `[rust, go]`), rather than the directory path.
+
+- **Instant Shell Reuse**: If you request a language combination that you've used before, `ah` will instantly reuse the cached Nix profile. This ensures near-zero startup time for subsequent runs.
+- **The Trade-off**: You cannot concurrently manage multiple versions of the same language configuration (e.g., maintaining one session with Python 3.9 and another with Python 3.11).
+- **Ad-hoc First**: This design is intentional. `ah` is optimized for **rapid prototyping, ad-hoc experimenting, and quick startup**, prioritizing immediate availability over complex, long-term multi-version project management.
