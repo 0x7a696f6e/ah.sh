@@ -30,6 +30,13 @@ jobs:
           jq -r '[.[] | select(.type == "dir" and .name != ".github" and .name != ".git") | .name] | sort' \
           > src/assets/providers/dev-templates/supported_languages.json
 
+          # Update language counts in README.md dynamically
+          DEVENV_COUNT=$(jq '. | length' src/assets/providers/devenv/supported_languages.json)
+          DEV_TEMPLATES_COUNT=$(jq '. | length' src/assets/providers/dev-templates/supported_languages.json)
+
+          sed -i -E "s/(\*\*\[devenv\]\([^)]+\)\*\*) \([0-9]+ languages\)/\1 (${DEVENV_COUNT} languages)/" README.md
+          sed -i -E "s/(\*\*\[dev-templates\]\([^)]+\)\*\*) \([0-9]+ templates\)/\1 (${DEV_TEMPLATES_COUNT} templates)/" README.md
+
       - name: Report Changes
         run: |
           echo "Devenv Languages Size: $(stat -c %s src/assets/providers/devenv/supported_languages.json) bytes"
