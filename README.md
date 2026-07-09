@@ -2,7 +2,7 @@
 
 # ah.sh
 
-_Magic development environments powered by Nix_
+_Development environments powered by Nix_
 
 [![CI](https://img.shields.io/github/actions/workflow/status/z1-0/ah.sh/ci.yml?style=flat-square)](https://github.com/z1-0/ah.sh/actions)
 [![Release](https://img.shields.io/github/v/release/z1-0/ah.sh?style=flat-square)](https://github.com/z1-0/ah.sh/releases)
@@ -12,7 +12,7 @@ _Magic development environments powered by Nix_
 
 </div>
 
-Spin up reproducible, per-project development shells in one command. `ah` generates a Nix flake on the fly, manages sessions so you can restore them instantly, and supports **60+ languages** out of the box — no `flake.nix` authoring required.
+Per-project development shells in one command. `ah` generates a Nix flake on the fly, manages sessions for instant restore, and supports 60+ languages out of the box. No `flake.nix` authoring required.
 
 ```bash
 # Need Rust and Go? Done.
@@ -21,15 +21,12 @@ ah rust go
 
 ## Features
 
-- **Instant dev shells** — type `ah rust` and you're in a shell with the Rust toolchain ready
-- **Session management** — sessions are persisted and can be listed, restored, updated, or removed
-- **Zero Nix boilerplate** — Leverage pre-configured community templates without the burden of maintaining them yourself
-- **Multiple providers** — Choose [devenv](https://devenv.sh) or [dev-templates](https://github.com/the-nix-way/dev-templates) based on your project needs
-- **Language aliases** — use `py` instead of `python`, `ts` instead of `typescript`, `cpp` instead of `cplusplus`
-- **Directory history** — `ah restore` remembers which sessions you used in each directory
-- **Nix profiles** — subsequent shell entries are near-instant thanks to cached Nix profiles
-- **Shell completions** — dynamic completions for Bash, Zsh, Fish, Elvish, and PowerShell
-- **Configurable** — TOML config with environment variable overrides
+- **Fast**: type `ah rust` and you're in a shell with the Rust toolchain ready
+- **Multi language**: combine multiple languages in one shell
+- **Language aliases**: short names for languages, e.g. `py` for Python, `ts` for TypeScript
+- **Community-powered**: templates from [devenv](https://devenv.sh) or [dev-templates](https://github.com/the-nix-way/dev-templates), no setup boilerplate required
+- **Session management**: no rebuild, instant restore, full visibility with GC pinning
+- **Shell completions**: Bash, Zsh, Fish, Elvish, and PowerShell
 
 ## Installation
 
@@ -100,7 +97,7 @@ ah python
 # Combine multiple languages
 ah rust go nodejs
 
-# You're now inside a Nix develop shell with all tools available!
+# You're in a Nix develop shell with all tools available
 ```
 
 ## Usage
@@ -108,7 +105,7 @@ ah rust go nodejs
 ### Creating dev shells
 
 ```bash
-# Shorthand — languages as positional args
+# Shorthand: languages as positional args
 ah rust go
 
 # Explicit subcommand
@@ -204,16 +201,16 @@ You can find the full list of supported languages and tools for each provider di
 
 ## How It Works
 
-1. You run `ah rust go` — `ah` resolves language aliases and selects the provider
+1. You run `ah rust go`. `ah` resolves language and selects the provider
 2. If a matching session already exists, it restores the cached Nix profile instantly
 3. Otherwise, `ah` generates a `flake.nix` tailored to your languages, builds it, and drops you into a `nix develop` shell
 4. Session metadata is persisted so you can list, restore, update, or remove it later
-5. Directory history tracks which sessions you used where, enabling quick `ah restore` lookups
+5. Directory history tracks which sessions you used where, so you can quickly `ah restore`
 
-### Session Reuse & Limitations
+### Session reuse and Limitations
 
-Sessions in `ah` are uniquely identified by the combination of the **Provider** and the **Languages** requested (e.g., `devenv` + `[rust, go]`), rather than the directory path.
+Sessions in `ah` are identified by the provider and languages requested (e.g., `devenv` + `[rust, go]`), not the directory path.
 
-- **Instant Shell Reuse**: If you request a language combination that you've used before, `ah` will instantly reuse the cached Nix profile. This ensures near-zero startup time for subsequent runs.
-- **The Trade-off**: You cannot concurrently manage multiple versions of the same language configuration (e.g., maintaining one session with Python 3.9 and another with Python 3.11).
-- **Ad-hoc First**: This design is intentional. `ah` is optimized for **rapid prototyping, ad-hoc experimenting, and quick startup**, prioritizing immediate availability over complex, long-term multi-version project management.
+If you request a language combination that you've used before, `ah` reuses the cached Nix profile directly. This means near-zero startup time for repeated sessions.
+
+The trade-off is that you cannot run multiple versions of the same language at the same time (e.g., Python 3.9 and Python 3.11). This is intentional. `ah` is built for quick startup and ad-hoc use, not for managing multiple long-term project configurations.
