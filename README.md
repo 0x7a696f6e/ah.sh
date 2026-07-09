@@ -2,7 +2,7 @@
 
 # ah.sh
 
-_Development environments powered by Nix_
+_Ad-hoc development shell manager powered by Nix_
 
 [![CI](https://img.shields.io/github/actions/workflow/status/z1-0/ah.sh/ci.yml?style=flat-square)](https://github.com/z1-0/ah.sh/actions)
 [![Release](https://img.shields.io/github/v/release/z1-0/ah.sh?style=flat-square)](https://github.com/z1-0/ah.sh/releases)
