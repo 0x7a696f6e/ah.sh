@@ -9,8 +9,6 @@ updates:
     versioning-strategy: auto
     commit-message:
       prefix: "chore(cargo)"
-    labels:
-      - cargo
     groups:
       cargo-minor-and-patch:
         update-types:
@@ -24,8 +22,6 @@ updates:
       day: wednesday
     commit-message:
       prefix: ci
-    labels:
-      - github-actions
     groups:
       actions-all:
         patterns:
@@ -38,8 +34,6 @@ updates:
       day: wednesday
     commit-message:
       prefix: "chore(nix)"
-    labels:
-      - nix
     groups:
       nix-all:
         patterns:
