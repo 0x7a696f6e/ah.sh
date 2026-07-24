@@ -67,6 +67,14 @@
             // {
               inherit cargoArtifacts;
               doCheck = false;
+              nativeBuildInputs = [ pkgs.installShellFiles ];
+              postInstall = ''
+                export HOME=$(mktemp -d)
+                installShellCompletion --cmd ah \
+                  --bash <($out/bin/ah completion bash) \
+                  --zsh <($out/bin/ah completion zsh) \
+                  --fish <($out/bin/ah completion fish)
+              '';
             }
           );
         in
