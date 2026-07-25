@@ -12,7 +12,7 @@ _Ad-hoc development shell manager powered by Nix_
 
 </div>
 
-Per-project development shells in one command. `ah` generates a Nix flake on the fly, manages sessions for instant restore, and supports 60+ languages out of the box. No `flake.nix` authoring required.
+Per-project development shells in one command. `ah` generates a Nix flake on the fly, manages sessions for quick restore, and supports 60+ languages. No `flake.nix` authoring required.
 
 ```bash
 # Need Rust and Go? Done.
@@ -25,7 +25,7 @@ ah rust go
 - **Multi language**: combine multiple languages in one shell
 - **Language aliases**: short names for languages, e.g. `py` for Python, `ts` for TypeScript
 - **Community-powered**: templates from [devenv](https://devenv.sh) or [dev-templates](https://github.com/the-nix-way/dev-templates), no setup boilerplate required
-- **Session management**: no rebuild, instant restore, full visibility with GC pinning
+- **Session management**: no rebuild, quick restore, full visibility with GC pinning
 - **Shell completions**: Bash, Zsh, Fish, Elvish, and PowerShell
 
 ## Installation
@@ -67,7 +67,7 @@ environment.systemPackages = [
 
 ### Binary Cache
 
-Pre-built binaries are available via [Cachix](https://app.cachix.org). Choose **one** of the following options based on your workflow:
+Pre-built binaries are available via [Cachix](https://app.cachix.org). Choose **one** of the following options:
 
 #### Option A: Imperative (CLI)
 
@@ -84,7 +84,7 @@ If you configure NixOS or Home Manager via code, add this to your settings:
 ```nix
 nix.settings = {
   substituters = [ "https://z1-0.cachix.org" ];
-  trusted-public-keys = [ "z1-0.cachix.org-1:e4TgPqNGXlI7xxs73HxTE65qUjmWaPxwnJX2Qk4Ng5U=" ];
+  trusted-public-keys = [ "z1-0.cachix.org-1:FS7lPgL0StRBOPrlu0RgdCL7LafUI23+U6Iivdw5QK8=" ];
 };
 ```
 
@@ -202,9 +202,9 @@ You can find the full list of supported languages and tools for each provider di
 ## How It Works
 
 1. You run `ah rust go`. `ah` resolves language and selects the provider
-2. If a matching session already exists, it restores the cached Nix profile instantly
-3. Otherwise, `ah` generates a `flake.nix` tailored to your languages, builds it, and drops you into a `nix develop` shell
-4. Session metadata is persisted so you can list, restore, update, or remove it later
+2. If a matching session already exists, it restores the cached Nix profile immediately
+3. Otherwise, `ah` generates a `flake.nix` for your languages, builds it, and drops you into a `nix develop` shell
+4. Session metadata is saved so you can list, restore, update, or remove it later
 5. Directory history tracks which sessions you used where, so you can quickly `ah restore`
 
 ### Session reuse and Limitations
