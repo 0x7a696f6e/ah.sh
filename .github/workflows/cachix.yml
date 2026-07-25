@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: cachix-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cachix:
     name: Cachix (${{ matrix.os }})
