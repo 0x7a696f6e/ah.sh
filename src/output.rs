@@ -2,7 +2,7 @@ use std::cmp::max;
 use std::collections::HashMap;
 use std::io::{IsTerminal, Write, stdin, stdout};
 
-use comfy_table::{Attribute, Cell, Color, Table, presets::NOTHING};
+use comfy_table::{Attribute, Cell, Color, ContentLineStyle, Table, TableStyle, presets::NOTHING};
 use crossterm::style::Stylize;
 
 use crate::provider::{ProviderType, get_provider};
@@ -84,11 +84,13 @@ pub fn print_sessions_list(sessions: &[Session]) {
 }
 
 fn print_sessions_table(headers: &[&str], rows: &[Vec<String>]) {
-    const SESSION_PRESET: &str = "        │          ";
+    const SESSION_STYLE: TableStyle = TableStyle::new()
+        .header_lines(ContentLineStyle::none().junction('│'))
+        .content_lines(ContentLineStyle::none().junction('│'));
 
     let mut table = Table::new();
     table
-        .load_preset(SESSION_PRESET)
+        .load_style(SESSION_STYLE)
         .set_content_arrangement(comfy_table::ContentArrangement::Dynamic);
 
     let header_cells: Vec<Cell> = headers
@@ -128,7 +130,7 @@ pub fn print_provider_list(providers: &[ProviderType]) {
 fn print_provider_table(providers: &[(String, usize)]) {
     let mut table = Table::new();
     table
-        .load_preset(NOTHING)
+        .load_style(NOTHING)
         .set_content_arrangement(comfy_table::ContentArrangement::Dynamic);
 
     table.set_header(vec![
